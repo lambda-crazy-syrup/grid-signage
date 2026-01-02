@@ -12,6 +12,7 @@ interface AppletConfig {
 interface AppletManifest {
   src: string
   name: string
+  id?: string
 }
 
 const appletFrames = new AppletFrames()
@@ -99,30 +100,6 @@ window.onload = async () => {
   })()
   document.documentElement.style.setProperty('--length', `${length}px`)
 
-  // 既存のitem4 iframeにもリンクハンドリングを適用
-  const item4Iframe = document.getElementById('item4') as HTMLIFrameElement
-  if (item4Iframe) {
-    setupIframeLinkHandling(item4Iframe)
-    
-    // 外部ドメインのiframeの場合、loadイベントでナビゲーションを監視
-    // iframe内での遷移は許可されている（sandbox属性により親ウィンドウへの遷移は防がれる）
-    let lastSrc = item4Iframe.src
-    item4Iframe.addEventListener('load', () => {
-      try {
-        // 外部ドメインの場合はアクセスできないが、試行
-        const currentLocation = item4Iframe.contentWindow?.location.href
-        if (currentLocation && currentLocation !== lastSrc) {
-          // iframe内でナビゲーションが発生した場合、srcを更新
-          item4Iframe.src = currentLocation
-          lastSrc = currentLocation
-        }
-      } catch (e) {
-        // 外部ドメインの場合は無視
-        // iframe内での遷移は許可されているので、エラーを抑制
-      }
-    })
-  }
-
   // set event listeners
   addEventListener('config', (e: Event) => {
     const customEvent = e as CustomEvent<{ iframe: HTMLIFrameElement; content: AppletConfig }>
@@ -141,14 +118,26 @@ window.onload = async () => {
     }
   })
 
-  // load applets
+  // load applets from apps.json
   const resp = await fetch('apps.json')
   const data: AppletManifest[] = await resp.json()
+  const container = document.querySelector('.container')
+  if (!container) return
+
   data.forEach((applet) => {
     // create and place applet
     const iframe = document.createElement('iframe')
     iframe.src = applet.src
     iframe.scrolling = 'no'
+    iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups')
+    
+    // id属性が指定されている場合は設定
+    if (applet.id) {
+      iframe.id = applet.id
+      // デバッグ用: idが正しく設定されたことを確認
+      console.debug(`iframe created with id: ${applet.id}`)
+    }
+    
     setupIframeLinkHandling(iframe) // リンクハンドリングを設定
     
     // 外部ドメインのiframeの場合、loadイベントでナビゲーションを監視
@@ -170,9 +159,6 @@ window.onload = async () => {
     })
     
     appletFrames.push(iframe)
-    const container = document.querySelector('.container')
-    if (container) {
-      container.appendChild(iframe)
-    }
+    container.appendChild(iframe)
   })
 }

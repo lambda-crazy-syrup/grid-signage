@@ -1,6 +1,12 @@
 [
     {
-        "src": "sample/sample.html",
-        "name": "sample"
+        "src": "blocks/sample/index.html",
+        "name": "sample",
+        "id": "item1"
+    },
+    {
+        "src": "https://www.benri.com/calendar/",
+        "name": "benri-calendar",
+        "id": "item4"
     }
 ]

@@ -5,6 +5,7 @@ import { setupErrorHandlers } from '@/lib/events/error'
 import { setupMessageHandler } from '@/lib/events/message'
 import { setupConfigHandler } from '@/lib/events/config'
 import { loadApplets } from '@/lib/applets'
+import { SELECTORS, ERROR_MESSAGES } from '@/lib/constants'
 
 // アプレット管理インスタンス
 const appletFrames = new AppletFrames()
@@ -24,9 +25,9 @@ window.onload = async () => {
   setupConfigHandler()
 
   // コンテナ要素を取得
-  const container = document.querySelector('.container')
+  const container = document.querySelector(SELECTORS.CONTAINER)
   if (!container || !(container instanceof HTMLElement)) {
-    console.error('Container element not found')
+    console.error(ERROR_MESSAGES.CONTAINER_NOT_FOUND)
     return
   }
 

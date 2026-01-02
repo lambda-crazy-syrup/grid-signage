@@ -1,6 +1,7 @@
 import { AppletConfigSchema, type AppletConfig } from '@/types'
 import { AppletFrames } from '@/AppletFrames'
 import { z } from 'zod'
+import { ERROR_MESSAGES } from '@/lib/constants'
 
 /**
  * postMessageハンドラーを設定
@@ -9,13 +10,13 @@ import { z } from 'zod'
 export const setupMessageHandler = (appletFrames: AppletFrames): void => {
   window.addEventListener('message', (event: MessageEvent) => {
     if (event.origin !== window.location.origin) {
-      console.warn('Invalid origin:', event.origin)
+      console.warn(ERROR_MESSAGES.INVALID_ORIGIN, event.origin)
       return
     }
 
     const iframe = appletFrames.getIframeByWindow(event.source as Window)
     if (iframe === undefined) {
-      console.warn('Unknown source')
+      console.warn(ERROR_MESSAGES.UNKNOWN_SOURCE)
       return
     }
 
@@ -26,9 +27,9 @@ export const setupMessageHandler = (appletFrames: AppletFrames): void => {
       dispatchEvent(customEvent)
     } catch (error) {
       if (error instanceof z.ZodError) {
-        console.error('Invalid applet config:', error.issues)
+        console.error(ERROR_MESSAGES.INVALID_APPLET_CONFIG, error.issues)
       } else {
-        console.error('Failed to parse applet config:', error)
+        console.error(ERROR_MESSAGES.FAILED_TO_PARSE_CONFIG, error)
       }
     }
   })

@@ -1,3 +1,5 @@
+import { ERROR_MESSAGES } from '@/lib/constants'
+
 /**
  * エラーハンドラーを設定
  * sandboxによるナビゲーションエラーを抑制
@@ -5,7 +7,7 @@
 export const setupErrorHandlers = (): void => {
   // sandboxによるナビゲーションエラーを抑制
   window.addEventListener('error', (e) => {
-    if (e.message && e.message.includes('Unsafe attempt to initiate navigation')) {
+    if (e.message && e.message.includes(ERROR_MESSAGES.NAVIGATION_BLOCKED)) {
       e.preventDefault()
       e.stopPropagation()
       return false

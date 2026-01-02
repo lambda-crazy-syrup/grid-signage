@@ -9,7 +9,9 @@ export const calculateGridLength = (): number => {
 /**
  * グリッドを初期化
  */
+import { CSS_VARS } from './constants'
+
 export const initializeGrid = (): void => {
   const length = calculateGridLength()
-  document.documentElement.style.setProperty('--length', `${length}px`)
+  document.documentElement.style.setProperty(CSS_VARS.LENGTH, `${length}px`)
 }

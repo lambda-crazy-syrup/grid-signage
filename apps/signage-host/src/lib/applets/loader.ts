@@ -1,13 +1,14 @@
 import { AppsConfigSchema, type AppletManifest } from '@/types'
 import { z } from 'zod'
+import { CONFIG_FILE, ERROR_MESSAGES } from '@/lib/constants'
 
 /**
  * apps.jsonからアプレット設定を読み込む
  */
 export const loadAppletsConfig = async (): Promise<AppletManifest[]> => {
-  const resp = await fetch('apps.json')
+  const resp = await fetch(CONFIG_FILE)
   if (!resp.ok) {
-    throw new Error(`Failed to fetch apps.json: ${resp.statusText}`)
+    throw new Error(`${ERROR_MESSAGES.FAILED_TO_FETCH_CONFIG} ${resp.statusText}`)
   }
 
   const rawData = await resp.json()

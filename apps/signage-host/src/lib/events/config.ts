@@ -1,12 +1,13 @@
 import { type AppletConfig } from '@/types'
 import { applyAppletConfig } from '@/lib/config/applier'
+import { EVENT_TYPES } from '@/lib/constants'
 
 /**
  * configイベントハンドラーを設定
  * アプレットの配置とサイズを適用
  */
 export const setupConfigHandler = (): void => {
-  addEventListener('config', (e: Event) => {
+  addEventListener(EVENT_TYPES.CONFIG, (e: Event) => {
     const customEvent = e as CustomEvent<{ iframe: HTMLIFrameElement; content: AppletConfig }>
     const { iframe, content: config } = customEvent.detail
 

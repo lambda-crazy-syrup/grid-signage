@@ -1,4 +1,5 @@
 import { type AppletConfig } from '@/types'
+import { CSS_VARS } from '@/lib/constants'
 
 /**
  * アプレットの設定を適用
@@ -12,13 +13,13 @@ export const applyAppletConfig = (
   iframe.style.cssText = `
     grid-column: ${config.grid_column};
     grid-row   : ${config.grid_row};
-    width      : calc(var(--length) * ${config.width});
-    height     : calc(var(--length) * ${config.height});
+    width      : calc(var(${CSS_VARS.LENGTH}) * ${config.width});
+    height     : calc(var(${CSS_VARS.LENGTH}) * ${config.height});
     border     : none;
   `
 
   // iframe内のzoomを設定
-  const length = getComputedStyle(document.documentElement).getPropertyValue('--length')
+  const length = getComputedStyle(document.documentElement).getPropertyValue(CSS_VARS.LENGTH)
   if (iframe.contentDocument?.body) {
     iframe.contentDocument.body.style.zoom = `calc(${length.slice(0, -2)}  / ${config.cell_size})`
   }

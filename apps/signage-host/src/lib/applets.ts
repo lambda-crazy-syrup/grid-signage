@@ -1,5 +1,5 @@
 import { AppsConfigSchema, type AppletManifest } from '../types'
-import { createAppletIframe } from './iframe'
+import { createAppletIframe } from './iframe/create'
 import { AppletFrames } from '../AppletFrames'
 import { z } from 'zod'
 

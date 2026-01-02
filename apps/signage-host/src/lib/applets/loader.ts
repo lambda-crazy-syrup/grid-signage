@@ -1,24 +1,34 @@
 import { AppsConfigSchema, type AppletManifest } from '@/types'
 import { z } from 'zod'
-import { CONFIG_FILE, ERROR_MESSAGES } from '@/lib/constants'
+import { CONFIG_FILE } from '@/lib/constants'
+import { createConfigLoadError, createConfigValidationError, logError } from '@/lib/utils/errors'
 
 /**
  * apps.jsonからアプレット設定を読み込む
  *
  * @returns アプレット設定の配列
- * @throws {Error} ファイルの取得に失敗した場合
- * @throws {z.ZodError} 設定のバリデーションに失敗した場合
+ * @throws {AppletError} ファイルの取得に失敗した場合、または設定のバリデーションに失敗した場合
  */
 export const loadAppletsConfig = async (): Promise<AppletManifest[]> => {
-  const resp = await fetch(CONFIG_FILE)
-  if (!resp.ok) {
-    throw new Error(`${ERROR_MESSAGES.FAILED_TO_FETCH_CONFIG} ${resp.statusText}`)
+  try {
+    const resp = await fetch(CONFIG_FILE)
+    if (!resp.ok) {
+      throw createConfigLoadError(new Error(resp.statusText))
+    }
+
+    const rawData = await resp.json()
+    const data = AppsConfigSchema.parse(rawData)
+
+    return data
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      throw createConfigValidationError(error)
+    }
+    if (error instanceof Error && error.name === 'AppletError') {
+      throw error
+    }
+    throw createConfigLoadError(error)
   }
-
-  const rawData = await resp.json()
-  const data = AppsConfigSchema.parse(rawData)
-
-  return data
 }
 
 /**
@@ -28,8 +38,5 @@ export const loadAppletsConfig = async (): Promise<AppletManifest[]> => {
  * @param error - 発生したエラー
  */
 export const handleLoadError = (error: unknown): void => {
-  console.error('Failed to load applets:', error)
-  if (error instanceof z.ZodError) {
-    console.error('Validation errors:', error.issues)
-  }
+  logError(error, 'loadAppletsConfig')
 }

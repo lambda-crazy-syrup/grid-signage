@@ -1,4 +1,5 @@
 import { SELECTORS, LINK_TARGETS, ERROR_MESSAGES } from '@/lib/constants'
+import { logWarning } from '@/lib/utils/errors'
 
 /**
  * iframe内のリンクをiframe内で開くようにする
@@ -28,7 +29,8 @@ export const setupLinkHandling = (iframe: HTMLIFrameElement): void => {
         })
       })
     } catch (e) {
-      console.debug(ERROR_MESSAGES.CANNOT_ACCESS_IFRAME, e)
+      // クロスオリジンの場合はアクセスできないため、デバッグログのみ出力
+      logWarning(ERROR_MESSAGES.CANNOT_ACCESS_IFRAME, e)
     }
   })
 }

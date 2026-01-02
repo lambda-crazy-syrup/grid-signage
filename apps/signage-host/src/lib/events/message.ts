@@ -2,6 +2,7 @@ import { AppletConfigSchema, type AppletMessage, type AppletConfigEventDetail } 
 import { AppletFrames } from '@/AppletFrames'
 import { z } from 'zod'
 import { ERROR_MESSAGES, EVENT_TYPES } from '@/lib/constants'
+import { createInvalidMessageError, createConfigValidationError, logError, logWarning } from '@/lib/utils/errors'
 
 /**
  * postMessageのデータがAppletMessage型かどうかを判定
@@ -30,20 +31,20 @@ export const setupMessageHandler = (appletFrames: AppletFrames): void => {
   window.addEventListener('message', (event: MessageEvent<unknown>) => {
     // オリジンチェック
     if (event.origin !== window.location.origin) {
-      console.warn(ERROR_MESSAGES.INVALID_ORIGIN, event.origin)
+      logWarning(ERROR_MESSAGES.INVALID_ORIGIN, event.origin)
       return
     }
 
     // iframeの特定
     const iframe = appletFrames.getIframeByWindow(event.source as Window)
     if (iframe === undefined) {
-      console.warn(ERROR_MESSAGES.UNKNOWN_SOURCE)
+      logWarning(ERROR_MESSAGES.UNKNOWN_SOURCE)
       return
     }
 
     // メッセージ型チェック
     if (!isAppletMessage(event.data)) {
-      console.warn('Invalid message format:', event.data)
+      logWarning(createInvalidMessageError(event.data).message)
       return
     }
 
@@ -55,9 +56,9 @@ export const setupMessageHandler = (appletFrames: AppletFrames): void => {
       dispatchEvent(customEvent)
     } catch (error) {
       if (error instanceof z.ZodError) {
-        console.error(ERROR_MESSAGES.INVALID_APPLET_CONFIG, error.issues)
+        logError(createConfigValidationError(error), 'setupMessageHandler')
       } else {
-        console.error(ERROR_MESSAGES.FAILED_TO_PARSE_CONFIG, error)
+        logError(error, 'setupMessageHandler')
       }
     }
   })

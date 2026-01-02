@@ -42,18 +42,29 @@ bun run type-check
 
 ## プロジェクト構造
 
-```
+```text
 grid-signage/
 ├── apps/
 │   └── signage-host/    # メインアプリ
+│       ├── applets/      # ローカルアプレット
+│       │   └── sample/   # サンプルアプレット
 │       ├── src/         # ソースコード
-│       ├── sample/      # サンプルアプレット
 │       └── apps.json    # アプレット設定
 ├── packages/
 │   └── core/            # 共有コアライブラリ（将来用）
 └── package.json         # ルート設定
 ```
 
-## ライセンス
+## アプレットの管理
 
-Private
+すべてのアプレット（ローカルアプレットと外部URL）は`apps/signage-host/apps.json`で管理。
+
+### ローカルアプレットの追加
+
+1. `apps/signage-host/applets/`配下に新しいディレクトリを作成
+2. `index.html`ファイルを作成
+3. `apps.json`にエントリを追加
+
+### 外部URLの追加
+
+`apps.json`に外部URLを直接指定できます。

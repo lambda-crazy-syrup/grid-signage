@@ -1,6 +1,6 @@
 [
     {
-        "src": "blocks/sample/index.html",
+        "src": "applets/sample/index.html",
         "name": "sample",
         "id": "item1"
     },

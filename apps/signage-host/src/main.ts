@@ -16,6 +16,62 @@ interface AppletManifest {
 
 const appletFrames = new AppletFrames()
 
+// iframe内のリンクをiframe内で開くようにする
+const setupIframeLinkHandling = (iframe: HTMLIFrameElement) => {
+  // iframeが読み込まれた後に処理
+  iframe.addEventListener('load', () => {
+    try {
+      // 外部ドメインの場合はアクセスできないので、エラーを無視
+      const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document
+      if (!iframeDoc) {
+        // 外部ドメインの場合は、loadイベントでナビゲーションを監視
+        // 親ウィンドウでのナビゲーションを防ぐ
+        return
+      }
+
+      // 同じオリジンの場合は、リンクにイベントリスナーを追加
+      const links = iframeDoc.querySelectorAll('a[href]')
+      links.forEach((link) => {
+        const anchor = link as HTMLAnchorElement
+        // target属性を_selfに設定（iframe内で開く）
+        if (!anchor.target || anchor.target === '_parent' || anchor.target === '_top') {
+          anchor.target = '_self'
+        }
+        anchor.addEventListener('click', (e) => {
+          const href = anchor.href
+          if (href && href !== iframe.src && !href.startsWith('#')) {
+            e.preventDefault()
+            // iframe内で開く
+            iframe.src = href
+          }
+        })
+      })
+    } catch (e) {
+      // 外部ドメインの場合はSame-Origin Policyによりアクセスできない
+      // この場合は、親ウィンドウでナビゲーションをインターセプトする方法を使用
+      console.debug('Cannot access iframe content (cross-origin):', e)
+    }
+  })
+}
+
+// エラーハンドリング: sandboxによるナビゲーションエラーを抑制
+// iframe内での遷移は許可しつつ、親ウィンドウへの遷移エラーを抑制
+window.addEventListener('error', (e) => {
+  if (e.message && e.message.includes('Unsafe attempt to initiate navigation')) {
+    // sandboxによるナビゲーションエラーを抑制（親ウィンドウへの遷移を防ぐため）
+    e.preventDefault()
+    e.stopPropagation()
+    return false
+  }
+}, true)
+
+// unhandledrejectionイベントでもエラーを抑制
+window.addEventListener('unhandledrejection', (e) => {
+  if (e.reason && typeof e.reason === 'string' && e.reason.includes('navigation')) {
+    e.preventDefault()
+  }
+})
+
 window.addEventListener('message', (event: MessageEvent) => {
   if (event.origin !== window.location.origin) {
     console.warn('Invalid origin:', event.origin)
@@ -43,6 +99,30 @@ window.onload = async () => {
   })()
   document.documentElement.style.setProperty('--length', `${length}px`)
 
+  // 既存のitem4 iframeにもリンクハンドリングを適用
+  const item4Iframe = document.getElementById('item4') as HTMLIFrameElement
+  if (item4Iframe) {
+    setupIframeLinkHandling(item4Iframe)
+    
+    // 外部ドメインのiframeの場合、loadイベントでナビゲーションを監視
+    // iframe内での遷移は許可されている（sandbox属性により親ウィンドウへの遷移は防がれる）
+    let lastSrc = item4Iframe.src
+    item4Iframe.addEventListener('load', () => {
+      try {
+        // 外部ドメインの場合はアクセスできないが、試行
+        const currentLocation = item4Iframe.contentWindow?.location.href
+        if (currentLocation && currentLocation !== lastSrc) {
+          // iframe内でナビゲーションが発生した場合、srcを更新
+          item4Iframe.src = currentLocation
+          lastSrc = currentLocation
+        }
+      } catch (e) {
+        // 外部ドメインの場合は無視
+        // iframe内での遷移は許可されているので、エラーを抑制
+      }
+    })
+  }
+
   // set event listeners
   addEventListener('config', (e: Event) => {
     const customEvent = e as CustomEvent<{ iframe: HTMLIFrameElement; content: AppletConfig }>
@@ -69,6 +149,26 @@ window.onload = async () => {
     const iframe = document.createElement('iframe')
     iframe.src = applet.src
     iframe.scrolling = 'no'
+    setupIframeLinkHandling(iframe) // リンクハンドリングを設定
+    
+    // 外部ドメインのiframeの場合、loadイベントでナビゲーションを監視
+    // iframe内での遷移は許可されている（sandbox属性により親ウィンドウへの遷移は防がれる）
+    let lastSrc = iframe.src
+    iframe.addEventListener('load', () => {
+      try {
+        // 外部ドメインの場合はアクセスできないが、試行
+        const currentLocation = iframe.contentWindow?.location.href
+        if (currentLocation && currentLocation !== lastSrc) {
+          // iframe内でナビゲーションが発生した場合、srcを更新
+          iframe.src = currentLocation
+          lastSrc = currentLocation
+        }
+      } catch (e) {
+        // 外部ドメインの場合は無視
+        // iframe内での遷移は許可されているので、エラーを抑制
+      }
+    })
+    
     appletFrames.push(iframe)
     const container = document.querySelector('.container')
     if (container) {

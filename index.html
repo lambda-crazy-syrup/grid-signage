@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="main.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <iframe src="https://www.benri.com/calendar/" id="item4" scrolling="no"></iframe>
+    </div>
+</body>
+
+<script>
+    const appletFrames = new AppletFrames();
+    window.addEventListener("message", (event) => {
+        if (event.origin !== window.location.origin) return console.warn("Invalid origin:", event.origin);
+        const iframe = appletFrames.getIframeByWindow(event.source);
+        if (iframe === undefined) return console.warn("Unknown source");
+        const detail = { iframe: iframe, content: event.data.content };
+        const customEvent = new CustomEvent(event.data.type, { detail });
+        dispatchEvent(customEvent);
+    });
+
+    window.onload = async () => {
+        // calculate and set --length
+        const aspectRatio = window.innerWidth / window.innerHeight;
+        const length = (() => {
+            if (aspectRatio >= 16 / 9) {
+                return window.innerWidth / 16;
+            } else {
+                return window.innerHeight / 16;
+            }
+        })();
+        document.documentElement.style.setProperty('--length', `${length}px`);
+
+
+        // set event listeners
+        addEventListener("config", e => {
+            // console.log(e);
+            // console.log(e.detail.iframe);
+            const config = e.detail.content;
+            const iframe = e.detail.iframe;
+            iframe.style = `
+                grid-column: ${config.grid_column};
+                grid-row   : ${config.grid_row};
+                width      : calc(var(--length) * ${config.width});
+                height     : calc(var(--length) * ${config.height});
+                border     : none;
+            `;
+            const l = getComputedStyle(document.documentElement).getPropertyValue('--length');
+            // console.log(l);
+            iframe.contentDocument.body.style.zoom = `calc(${l.slice(0, -2)}  / ${config.cell_size})`; //slice to drop "px"
+            // iframe.contentDocument.body.style.zoom = `calc(${length}  / ${config.cell_size})`;
+        });
+
+        // load applets
+        const resp = await fetch("apps.json");
+        const data = await resp.json();
+        // console.log(data);
+        data.forEach(applet => {
+            // create and place applet
+            const iframe = document.createElement("iframe");
+            iframe.src = applet.src;
+            iframe.scrolling = "no";
+            appletFrames.push(iframe);
+            document.querySelector(".container").appendChild(iframe);
+        });
+    };
+</script>
+
+<style>
+    /* @media (aspect-ratio:16/9) {
+        :root {
+            --length: calc(100vw/16);
+        }
+    }
+
+    @media (aspect-ratio:9/16) {
+        :root {
+            --length: calc(100vh/16);
+        }
+    } */
+
+    body,
+    html {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    .container {
+        display: grid;
+        /* 1マスを 100px × 100px に設定（任意に変更可能） */
+        grid-template-columns: repeat(auto-fill, var(--length));
+        grid-template-rows: repeat(auto-fill, var(--length));
+
+        /* 画面全体に広げる場合 */
+        width: 100vw;
+        height: 100vh;
+
+        /* 背景に薄く線を引くとデバッグしやすいです */
+        background-image:
+            linear-gradient(to right, #eee 1px, transparent 1px),
+            linear-gradient(to bottom, #eee 1px, transparent 1px);
+        background-size: var(--length) var(--length);
+    }
+
+    #item4 {
+        /* 左から3番目、上から2番目の格子に配置する場合 */
+        grid-column: 2;
+        grid-row: 2;
+
+        /* サイズ指定（1マス分） */
+        width: calc(var(--length) * 3);
+        height: calc(var(--length) * 4);
+
+        border: none;
+    }
+</style>

@@ -1,5 +1,11 @@
 # grid-signage
 
+![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue?logo=typescript)
+![Vite](https://img.shields.io/badge/Vite-5.4-646CFF?logo=vite&logoColor=white)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4.1-38B2AC?logo=tailwind-css&logoColor=white)
+![Bun](https://img.shields.io/badge/Bun-1.2-000000?logo=bun&logoColor=white)
+![Zod](https://img.shields.io/badge/Zod-4.3-3E63DD?logo=zod)
+
 グリッドベースのサイネージシステム。iframeを使用して複数のアプレットをグリッドレイアウトで配置・管理します。
 
 ## 技術スタック

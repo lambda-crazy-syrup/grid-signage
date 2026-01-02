@@ -1,33 +1,18 @@
-import { AppsConfigSchema, type AppletManifest } from '../types'
-import { createAppletIframe } from './iframe/create'
 import { AppletFrames } from '../AppletFrames'
-import { z } from 'zod'
+import { loadAppletsConfig, handleLoadError } from './applets/loader'
+import { addApplets } from './applets/manager'
 
 /**
- * アプレットを読み込む
+ * アプレットを読み込んで表示
  */
 export const loadApplets = async (
   container: HTMLElement,
   appletFrames: AppletFrames
 ): Promise<void> => {
   try {
-    const resp = await fetch('apps.json')
-    if (!resp.ok) {
-      throw new Error(`Failed to fetch apps.json: ${resp.statusText}`)
-    }
-
-    const rawData = await resp.json()
-    const data = AppsConfigSchema.parse(rawData)
-
-    data.forEach((applet: AppletManifest) => {
-      const iframe = createAppletIframe(applet)
-      appletFrames.push(iframe)
-      container.appendChild(iframe)
-    })
+    const applets = await loadAppletsConfig()
+    addApplets(applets, container, appletFrames)
   } catch (error) {
-    console.error('Failed to load applets:', error)
-    if (error instanceof z.ZodError) {
-      console.error('Validation errors:', error.issues)
-    }
+    handleLoadError(error)
   }
 }

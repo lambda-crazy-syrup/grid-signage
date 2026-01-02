@@ -23,3 +23,17 @@ export const AppsConfigSchema = z.array(AppletManifestSchema)
 export type AppletConfig = z.infer<typeof AppletConfigSchema>
 export type AppletManifest = z.infer<typeof AppletManifestSchema>
 export type AppsConfig = z.infer<typeof AppsConfigSchema>
+
+// postMessage関連の型定義
+export interface AppletMessage {
+  type: 'config'
+  content: AppletConfig
+}
+
+// カスタムイベントの型定義
+export interface AppletConfigEventDetail {
+  iframe: HTMLIFrameElement
+  content: AppletConfig
+}
+
+export type AppletConfigEvent = CustomEvent<AppletConfigEventDetail>

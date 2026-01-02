@@ -1,0 +1,37 @@
+@import "tailwindcss";
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.container {
+  display: grid;
+  /* 1マスを 100px × 100px に設定（任意に変更可能） */
+  grid-template-columns: repeat(auto-fill, var(--length));
+  grid-template-rows: repeat(auto-fill, var(--length));
+
+  /* 画面全体に広げる場合 */
+  width: 100vw;
+  height: 100vh;
+
+  /* 背景に薄く線を引くとデバッグしやすいです */
+  background-image:
+    linear-gradient(to right, #eee 1px, transparent 1px),
+    linear-gradient(to bottom, #eee 1px, transparent 1px);
+  background-size: var(--length) var(--length);
+}
+
+#item4 {
+  /* 左から3番目、上から2番目の格子に配置する場合 */
+  grid-column: 2;
+  grid-row: 2;
+
+  /* サイズ指定（1マス分） */
+  width: calc(var(--length) * 3);
+  height: calc(var(--length) * 4);
+
+  border: none;
+}

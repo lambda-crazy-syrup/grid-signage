@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "bun run --filter=signage-host dev",
     "build": "bun run --filter=signage-host build",
+    "preview": "bun run --filter=signage-host preview",
     "type-check": "bun run --filter=signage-host type-check"
   },
   "devDependencies": {

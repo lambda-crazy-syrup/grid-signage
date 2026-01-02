@@ -4,6 +4,10 @@ import { CSS_VARS } from '@/lib/constants'
 /**
  * アプレットの設定を適用
  * グリッド配置、サイズ、zoomを設定
+ *
+ * @param iframe - 設定を適用するiframe要素
+ * @param config - 適用するアプレット設定
+ * @throws {Error} iframe.contentDocumentにアクセスできない場合（クロスオリジン）
  */
 export const applyAppletConfig = (
   iframe: HTMLIFrameElement,

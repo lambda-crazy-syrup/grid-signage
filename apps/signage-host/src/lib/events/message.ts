@@ -5,6 +5,9 @@ import { ERROR_MESSAGES, EVENT_TYPES } from '@/lib/constants'
 
 /**
  * postMessageのデータがAppletMessage型かどうかを判定
+ *
+ * @param data - 判定するデータ
+ * @returns AppletMessage型の場合true
  */
 const isAppletMessage = (data: unknown): data is AppletMessage => {
   return (
@@ -19,6 +22,9 @@ const isAppletMessage = (data: unknown): data is AppletMessage => {
 /**
  * postMessageハンドラーを設定
  * アプレットからの設定メッセージを受信して処理
+ * オリジンチェック、型チェック、バリデーションを実行
+ *
+ * @param appletFrames - アプレット管理インスタンス
  */
 export const setupMessageHandler = (appletFrames: AppletFrames): void => {
   window.addEventListener('message', (event: MessageEvent<unknown>) => {

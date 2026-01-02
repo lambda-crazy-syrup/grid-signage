@@ -1,5 +1,9 @@
 /**
  * iframe内のナビゲーションを監視
+ * iframe内のURL変更を検知して、iframeのsrcを更新
+ *
+ * @param iframe - ナビゲーション監視を設定するiframe要素
+ * @remarks クロスオリジンの場合はアクセスできないため、エラーは無視
  */
 export const setupNavigation = (iframe: HTMLIFrameElement): void => {
   let lastSrc = iframe.src

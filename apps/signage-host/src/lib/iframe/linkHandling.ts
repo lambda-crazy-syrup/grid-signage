@@ -2,6 +2,10 @@ import { SELECTORS, LINK_TARGETS, ERROR_MESSAGES } from '@/lib/constants'
 
 /**
  * iframe内のリンクをiframe内で開くようにする
+ * リンクのtarget属性を調整し、クリック時にiframe内で遷移するようにする
+ *
+ * @param iframe - リンクハンドリングを設定するiframe要素
+ * @remarks クロスオリジンの場合はアクセスできないため、エラーは無視
  */
 export const setupLinkHandling = (iframe: HTMLIFrameElement): void => {
   iframe.addEventListener('load', () => {

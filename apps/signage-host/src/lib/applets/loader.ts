@@ -4,6 +4,10 @@ import { CONFIG_FILE, ERROR_MESSAGES } from '@/lib/constants'
 
 /**
  * apps.jsonからアプレット設定を読み込む
+ *
+ * @returns アプレット設定の配列
+ * @throws {Error} ファイルの取得に失敗した場合
+ * @throws {z.ZodError} 設定のバリデーションに失敗した場合
  */
 export const loadAppletsConfig = async (): Promise<AppletManifest[]> => {
   const resp = await fetch(CONFIG_FILE)
@@ -19,6 +23,9 @@ export const loadAppletsConfig = async (): Promise<AppletManifest[]> => {
 
 /**
  * アプレット設定の読み込みエラーを処理
+ * エラーをコンソールに出力
+ *
+ * @param error - 発生したエラー
  */
 export const handleLoadError = (error: unknown): void => {
   console.error('Failed to load applets:', error)

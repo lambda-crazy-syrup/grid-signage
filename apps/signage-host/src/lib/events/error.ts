@@ -3,6 +3,7 @@ import { ERROR_MESSAGES } from '@/lib/constants'
 /**
  * エラーハンドラーを設定
  * sandboxによるナビゲーションエラーを抑制
+ * グローバルエラーと未処理のPromise拒否をキャッチ
  */
 export const setupErrorHandlers = (): void => {
   // sandboxによるナビゲーションエラーを抑制

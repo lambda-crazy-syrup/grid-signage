@@ -1,5 +1,10 @@
+import { CSS_VARS } from './constants'
+
 /**
- * グリッドサイズ計算
+ * グリッドサイズを計算
+ * アスペクト比に基づいて、16:9のグリッドセルサイズを計算
+ *
+ * @returns グリッドセルのサイズ（ピクセル単位）
  */
 export const calculateGridLength = (): number => {
   const aspectRatio = window.innerWidth / window.innerHeight
@@ -8,9 +13,8 @@ export const calculateGridLength = (): number => {
 
 /**
  * グリッドを初期化
+ * 計算したグリッドサイズをCSS変数に設定
  */
-import { CSS_VARS } from './constants'
-
 export const initializeGrid = (): void => {
   const length = calculateGridLength()
   document.documentElement.style.setProperty(CSS_VARS.LENGTH, `${length}px`)

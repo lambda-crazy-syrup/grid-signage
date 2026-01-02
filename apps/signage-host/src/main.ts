@@ -1,19 +1,11 @@
 import { AppletFrames } from './AppletFrames'
 import './style.css'
-
-interface AppletConfig {
-  grid_column: number
-  grid_row: number
-  width: number
-  height: number
-  cell_size: number
-}
-
-interface AppletManifest {
-  src: string
-  name: string
-  id?: string
-}
+import {
+  AppletConfigSchema,
+  AppsConfigSchema,
+  type AppletConfig,
+} from './types'
+import { z } from 'zod'
 
 const appletFrames = new AppletFrames()
 
@@ -83,9 +75,20 @@ window.addEventListener('message', (event: MessageEvent) => {
     console.warn('Unknown source')
     return
   }
-  const detail = { iframe: iframe, content: event.data.content }
-  const customEvent = new CustomEvent(event.data.type, { detail })
-  dispatchEvent(customEvent)
+  
+  // メッセージの型検証
+  try {
+    const config = AppletConfigSchema.parse(event.data.content)
+    const detail = { iframe: iframe, content: config }
+    const customEvent = new CustomEvent(event.data.type, { detail })
+    dispatchEvent(customEvent)
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      console.error('Invalid applet config:', error.issues)
+    } else {
+      console.error('Failed to parse applet config:', error)
+    }
+  }
 })
 
 window.onload = async () => {
@@ -118,13 +121,25 @@ window.onload = async () => {
     }
   })
 
-  // load applets from apps.json
-  const resp = await fetch('apps.json')
-  const data: AppletManifest[] = await resp.json()
-  const container = document.querySelector('.container')
-  if (!container) return
+  // load applets from apps.json with validation
+  try {
+    const resp = await fetch('apps.json')
+    if (!resp.ok) {
+      throw new Error(`Failed to fetch apps.json: ${resp.statusText}`)
+    }
+    
+    const rawData = await resp.json()
+    
+    // スキーマ検証
+    const data = AppsConfigSchema.parse(rawData)
+    
+    const container = document.querySelector('.container')
+    if (!container) {
+      console.error('Container element not found')
+      return
+    }
 
-  data.forEach((applet) => {
+    data.forEach((applet) => {
     // create and place applet
     const iframe = document.createElement('iframe')
     iframe.src = applet.src
@@ -160,5 +175,11 @@ window.onload = async () => {
     
     appletFrames.push(iframe)
     container.appendChild(iframe)
-  })
+    })
+  } catch (error) {
+    console.error('Failed to load applets:', error)
+    if (error instanceof z.ZodError) {
+      console.error('Validation errors:', error.issues)
+    }
+  }
 }

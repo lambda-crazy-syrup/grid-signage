@@ -9,7 +9,9 @@
     "preview": "vite preview",
     "type-check": "tsc --noEmit"
   },
-  "dependencies": {},
+  "dependencies": {
+    "zod": "^4.3.4"
+  },
   "devDependencies": {
     "vite": "^5.4.0",
     "tailwindcss": "^4.1.0",

@@ -1,5 +1,5 @@
-import { type AppletConfig } from '../../types'
-import { applyAppletConfig } from '../config/applier'
+import { type AppletConfig } from '@/types'
+import { applyAppletConfig } from '@/lib/config/applier'
 
 /**
  * configイベントハンドラーを設定

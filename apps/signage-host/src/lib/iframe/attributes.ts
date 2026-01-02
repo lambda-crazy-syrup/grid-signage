@@ -1,4 +1,4 @@
-import { type AppletManifest } from '../../types'
+import { type AppletManifest } from '@/types'
 
 /**
  * iframeの属性を設定

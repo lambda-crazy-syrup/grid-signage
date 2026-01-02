@@ -1,6 +1,6 @@
-import { AppletFrames } from '../AppletFrames'
-import { loadAppletsConfig, handleLoadError } from './applets/loader'
-import { addApplets } from './applets/manager'
+import { AppletFrames } from '@/AppletFrames'
+import { loadAppletsConfig, handleLoadError } from '@/lib/applets/loader'
+import { addApplets } from '@/lib/applets/manager'
 
 /**
  * アプレットを読み込んで表示

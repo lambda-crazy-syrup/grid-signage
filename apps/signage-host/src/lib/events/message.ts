@@ -1,5 +1,5 @@
-import { AppletConfigSchema, type AppletConfig } from '../../types'
-import { AppletFrames } from '../../AppletFrames'
+import { AppletConfigSchema, type AppletConfig } from '@/types'
+import { AppletFrames } from '@/AppletFrames'
 import { z } from 'zod'
 
 /**

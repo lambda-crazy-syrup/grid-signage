@@ -7,6 +7,7 @@ export default defineConfig({
   resolve: {
     alias: {
       '@core': path.resolve(__dirname, '../../packages/core/src'),
+      '@': path.resolve(__dirname, './src'),
     },
   },
 })

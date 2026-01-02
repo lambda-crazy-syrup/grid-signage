@@ -1,4 +1,4 @@
-import { type AppletConfig } from '../../types'
+import { type AppletConfig } from '@/types'
 
 /**
  * アプレットの設定を適用

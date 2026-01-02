@@ -1,4 +1,4 @@
-import { AppsConfigSchema, type AppletManifest } from '../../types'
+import { AppsConfigSchema, type AppletManifest } from '@/types'
 import { z } from 'zod'
 
 /**

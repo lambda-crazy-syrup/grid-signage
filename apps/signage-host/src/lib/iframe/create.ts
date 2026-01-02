@@ -1,7 +1,7 @@
-import { type AppletManifest } from '../../types'
-import { setIframeAttributes } from './attributes'
-import { setupLinkHandling } from './linkHandling'
-import { setupNavigation } from './navigation'
+import { type AppletManifest } from '@/types'
+import { setIframeAttributes } from '@/lib/iframe/attributes'
+import { setupLinkHandling } from '@/lib/iframe/linkHandling'
+import { setupNavigation } from '@/lib/iframe/navigation'
 
 /**
  * アプレット用のiframeを作成

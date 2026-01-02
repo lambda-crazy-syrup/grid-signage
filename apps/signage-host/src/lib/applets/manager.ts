@@ -1,6 +1,6 @@
-import { type AppletManifest } from '../../types'
-import { AppletFrames } from '../../AppletFrames'
-import { createAppletIframe } from '../iframe/create'
+import { type AppletManifest } from '@/types'
+import { AppletFrames } from '@/AppletFrames'
+import { createAppletIframe } from '@/lib/iframe/create'
 
 /**
  * アプレットを追加

@@ -1,7 +1,9 @@
 import { AppletFrames } from './AppletFrames'
 import './style.css'
 import { initializeGrid } from './lib/grid'
-import { setupErrorHandlers, setupMessageHandler, setupConfigHandler } from './lib/events'
+import { setupErrorHandlers } from './lib/events/error'
+import { setupMessageHandler } from './lib/events/message'
+import { setupConfigHandler } from './lib/events/config'
 import { loadApplets } from './lib/applets'
 
 // アプレット管理インスタンス

@@ -1,0 +1,21 @@
+{
+  "name": "signage-host",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "zod": "^4.3.4"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0",
+    "tailwindcss": "^4.1.0",
+    "@tailwindcss/vite": "^4.1.0",
+    "typescript": "^5.6.0"
+  }
+}

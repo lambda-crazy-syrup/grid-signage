@@ -1,0 +1,12 @@
+[
+    {
+        "src": "applets/sample/index.html",
+        "name": "sample",
+        "id": "item1"
+    },
+    {
+        "src": "https://www.benri.com/calendar/",
+        "name": "benri-calendar",
+        "id": "item4"
+    }
+]

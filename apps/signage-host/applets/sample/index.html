@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+
+<body>
+    <img src="ちくちく.png">
+    <h1>Sample Applet</h1>
+    <h2 style="font-size: 40px;">Size in px</h2>
+    <h2 style="font-size: 3rem;">Size in rem</h2>
+</body>
+
+<script>
+    //             cell_size * width                                                  signage_cell_size * width
+    //       <----------------------------->                                       <----------------------------->
+    //    +-----+-----+-----+-----+-----+-----+  ^                              +-----+-----+-----+-----+-----+-----+  ^
+    //    |     |     |     |     |     |     |  |                              |     |     |     |     |     |     |  |
+    //    +-----+-----+-----+-----+-----+-----+  |                              +-----+-----+-----+-----+-----+-----+  |
+    //    |     |     |     |     |     |     |  |                              |     |     |     |     |     |     |  |
+    //    +-----+-----+-----+-----+-----+-----+  |        load in signage       +-----+-----+-----+-----+-----+-----+  |
+    //    |     |     |     |      cell_size * height   ===================>    |     |     |    signage_cell_size * height
+    //    +-----+-----+-----+-----+-----+-----+  |          zoom scs/cs         +-----+-----+-----+-----+-----+-----+  |
+    //    |     |     |     |     |     |     |  |                              |     |     |     |     |     |     |  |
+    //    +-----+-----+-----+-----+-----+-----+  v                              +-----+-----+-----+-----+-----+-----+  v
+
+
+    const config = {
+        grid_column: 3,
+        grid_row: 9,
+        width: 2, // in grid cells
+        height: 2, // in grid cells
+        cell_size: 200,
+    };
+    window.addEventListener("load", () => {
+        window.parent.postMessage({ type: "config", content: config });
+    });
+</script>
+
+<style>
+    body {
+        margin: 0;
+        background-color: rgba(60, 60, 60, 0.3);
+    }
+</style>

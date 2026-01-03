@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>3重の円弧タイマー</title>
+    <style>
+        body {
+            border:none;
+        }
+
+        canvas {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+
+    <canvas id="arcCanvas" width="524" height="524"></canvas>
+
+    <script>
+        const canvas = document.getElementById('arcCanvas');
+        const ctx = canvas.getContext('2d');
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2;
+
+        // 設定：[周期(ミリ秒), 色, 半径, 線の太さ]
+        const layers = [
+            { duration: 60 * 1000,      color: '#ff4757', radius: 220, width: 15 }, // 1分 (赤)
+            { duration: 3 * 60 * 1000,  color: '#2ed573', radius: 170, width: 15 }, // 3分 (緑)
+            { duration: 10 * 60 * 1000, color: '#1e90ff', radius: 120, width: 15 }  // 10分 (青)
+        ];
+
+        function draw() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            const now = new Date();
+            const currentTimeMs = 
+                (now.getMinutes() * 60 * 1000) + 
+                (now.getSeconds() * 1000) + 
+                now.getMilliseconds();
+
+            layers.forEach(layer => {
+                // 進捗計算 (0.0 〜 1.0)
+                // 剰余演算 (%) を使うことで、指定時間ごとに0に戻るようにします
+                const progress = (currentTimeMs % layer.duration) / layer.duration;
+                const endAngle = progress * 2 * Math.PI - Math.PI / 2;
+
+                // 1. 背景のガイド（薄い円）
+            ctx.beginPath();
+                ctx.arc(centerX, centerY, layer.radius, 0, 2 * Math.PI);
+                ctx.strokeStyle = '#e0e0e0';
+                ctx.lineWidth = layer.width;
+            ctx.stroke();
+
+                // 2. 動く円弧
+            ctx.beginPath();
+                ctx.arc(centerX, centerY, layer.radius, -Math.PI / 2, endAngle);
+                ctx.strokeStyle = layer.color;
+                ctx.lineWidth = layer.width;
+                ctx.lineCap = 'round';
+            ctx.stroke();
+            });
+
+            requestAnimationFrame(draw);
+        }
+
+        draw();
+    </script>
+
+    <script>
+        const config = {
+            grid_column: 6,
+            grid_row: 5,
+            width: 3, // in grid cells
+            height: 3, // in grid cells
+            cell_size: 540/3,
+        };
+        window.addEventListener("load", () => {
+            window.parent.postMessage({ type: "config", content: config });
+        });
+    </script>
+    </script>
+</body>
+
+</html>

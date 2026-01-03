@@ -8,5 +8,15 @@
         "src": "https://www.benri.com/calendar/",
         "name": "benri-calendar",
         "id": "item4"
+    },
+    {
+        "src": "applets/sample2/index.html",
+        "name": "sample2",
+        "id": "1310time"
+    },
+    {
+        "src": "applets/sample3/index.html",
+        "name": "sample3",
+        "id": "randomimage"
     }
 ]
